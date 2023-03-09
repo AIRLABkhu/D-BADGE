@@ -1,0 +1,2 @@
+format: 'python train_attack.py --device cuda:[ID] --checkpoint mnist_toy --tag budget/{0:.4f} --budget {0:>8.4f} -c mnist'
+values: ['10.0:99.0:20']

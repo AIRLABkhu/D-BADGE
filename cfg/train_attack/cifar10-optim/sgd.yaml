@@ -1,0 +1,5 @@
+learning_rate: 1.0E-2
+
+optimizer:
+  name: SGD
+  kwargs: {}

@@ -1,0 +1,15 @@
+# python train_attack.py --device cuda:0 --checkpoint cifar10_vgg11_1.0 -c cifar10-vgg11 --tag _baselines/00 --seed 00 --batch-size 128
+# python train_attack.py --device cuda:0 --checkpoint cifar10_vgg11_1.0 -c cifar10-vgg11 --tag _baselines/01 --seed 00 --batch-size 256
+# python train_attack.py --device cuda:0 --checkpoint cifar10_vgg11_1.0 -c cifar10-vgg11 --tag _baselines/02 --seed 00 --batch-size 512
+# python train_attack.py --device cuda:0 --checkpoint cifar10_vgg11_1.0 -c cifar10-vgg11 --tag _baselines/03 --seed 00 --batch-size 1024
+
+learning_rate: 1.0E-4
+
+optimizer:
+  name: Adam
+  kwargs:
+    betas: [0.5, 0.999]
+
+lr_scheduler: 
+  kwargs:
+    eta_min: ${learning_rate}

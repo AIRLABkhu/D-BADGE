@@ -1,0 +1,17 @@
+random_noise:
+  mean: 0
+  std: 0.03
+
+resize: 
+  size: [48, 48]
+
+# random_crop: 
+#   size: [32, 32]
+
+center_crop: 
+  size: [32, 32]
+
+h_flip: null
+
+v_flip: null
+

@@ -1,0 +1,43 @@
+device: cuda:0
+seed: 0
+deterministic: yes
+
+epochs: 1600
+beta: 0.01
+learning_rate: 1.0E-2
+
+optimizer:
+  name: SGD
+  kwargs: {}
+
+beta_scheduler: 
+  name: StepLR
+  kwargs:
+    step_size: 100
+    gamma: 0.9
+
+lr_scheduler:
+  name: CosineAnnealingWarmRestarts
+  kwargs:
+    eta_min: ${eval:${learning_rate} * 0.1}
+    T_0: ${epochs}
+    T_mult: 1
+
+batch_size: 256
+eval_batch_size: 512
+images_per_class: -1
+accumulation: 1
+max_iters: -1
+sliding_window_batch: False
+augmentations: []
+
+target: -1
+budget: 10.0
+regulation: clamp
+eval_step_size: -1
+
+loss_func: accuracy
+use_logits: no
+
+checkpoint: null
+tag: null

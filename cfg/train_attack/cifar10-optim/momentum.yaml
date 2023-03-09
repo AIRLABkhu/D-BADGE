@@ -1,0 +1,6 @@
+learning_rate: 1.0E-3
+
+optimizer:
+  name: SGD
+  kwargs: 
+    momentum: 0.999

@@ -1,0 +1,6 @@
+learning_rate: 1.0E-4
+
+optimizer:
+  name: Adam
+  kwargs:
+    betas: [0.5, 0.999]

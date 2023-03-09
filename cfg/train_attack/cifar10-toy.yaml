@@ -1,0 +1,8 @@
+learning_rate: 1.0E-2
+
+optimizer:
+  name: SGD
+  kwargs: 
+    weight_decay: 1.0E-6
+    momentum: 0.999
+    nesterov: True
