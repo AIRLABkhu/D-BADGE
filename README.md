@@ -34,7 +34,7 @@ Then train a new perturbation.
 # https://github.com/AIRLABkhu/Decision-BADGE/blob/main/train_attack.py
 python train_attack.py --device cuda:{ID} --checkpoint "cifar10_resnet18" --tag "_baselines/00"
 ```
-All files related with this training will be saved in "log/cifar10_resnet18/_baselines/00". \
+All files related with this training will be saved in ```"log/cifar10_resnet18/_baselines/00"```. \
 If you want to use Adam optimizer, try ```-c "cifar10-optim/adam"``` option.
 ```bash
 python train_attack.py --device cuda:{ID} --checkpoint "cifar10_resnet18" -c "cifar10-optim/adam" --tag "_baselines/00"
