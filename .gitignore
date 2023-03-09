@@ -190,3 +190,17 @@ poetry.toml
 .ionide
 
 # End of https://www.toptal.com/developers/gitignore/api/python,visualstudiocode
+
+### Project Files/Directories ###
+log/
+log_legacy/
+recipe/
+temp/
+data/cifar-10-batches-py
+data/cifar-100-python
+data/MNIST
+data/MNIST_CIFAR_like
+data/ciar-10-python.tar.gz
+data/ciar-100-python.tar.gz
+temp.py
+*.code-workspace
