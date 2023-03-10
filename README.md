@@ -1,5 +1,5 @@
 # Decision-BADGE
-Code for the paper "[Decision-BADGE: Decision-based Adversarial Batch Attack with Directional Gradient Estimation]()".
+Code for the paper "[Decision-BADGE: Decision-based Adversarial Batch Attack with Directional Gradient Estimation](https://arxiv.org/abs/2303.04980)".
 ### Abstract
 > The vulnerability of deep neural networks to adversarial examples has led to the rise in the use of adversarial attacks. While various decision-based and universal attack methods have been proposed, none have attempted to create a decision-based universal adversarial attack. This research proposes Decision-BADGE, which uses random gradient-free optimization and batch attack to generate universal adversarial perturbations for decision-based attacks. Multiple adversarial examples are combined to optimize a single universal perturbation, and the accuracy metric is reformulated into a continuous Hamming distance form. The effectiveness of accuracy metric as a loss function is demonstrated and mathematically proven. The combination of Decision-BADGE and the accuracy loss function performs better than both score-based image-dependent attack and white-box universal attack methods in terms of attack time efficiency. The research also shows that Decision-BADGE can successfully deceive unseen victims and accurately target specific classes.
 ### Architecture
@@ -64,5 +64,14 @@ python  train_attack.py --device cuda:{ID} --checkpoint "cifar10_resnet18" --tag
 ## Citation
 If you use this code in your paper, please consider citing this ```BibTeX``` entry.
 ```bibtex
-Will be uploaded soon.
+@misc{yu_arxiv_2023,
+  doi = {10.48550/ARXIV.2303.04980},
+  url = {https://arxiv.org/abs/2303.04980},
+  author = {Yu, Geunhyeok and Jeon, Minwoo and Hwang, Hyoseok},
+  keywords = {Computer Vision and Pattern Recognition (cs.CV), FOS: Computer and information sciences, FOS: Computer and information sciences},
+  title = {Decision-BADGE: Decision-based Adversarial Batch Attack with Directional Gradient Estimation},
+  publisher = {arXiv},
+  year = {2023},
+  copyright = {arXiv.org perpetual, non-exclusive license}
+}
 ```
