@@ -1,14 +1,21 @@
 # Decision-BADGE
 Code for the paper "[Decision-BADGE: Decision-based Adversarial Batch Attack with Directional Gradient Estimation](https://arxiv.org/abs/2303.04980)".
 ### Abstract
-> The vulnerability of deep neural networks to adversarial examples has led to the rise in the use of adversarial attacks. While various decision-based and universal attack methods have been proposed, none have attempted to create a decision-based universal adversarial attack. This research proposes Decision-BADGE, which uses random gradient-free optimization and batch attack to generate universal adversarial perturbations for decision-based attacks. Multiple adversarial examples are combined to optimize a single universal perturbation, and the accuracy metric is reformulated into a continuous Hamming distance form. The effectiveness of accuracy metric as a loss function is demonstrated and mathematically proven. The combination of Decision-BADGE and the accuracy loss function performs better than both score-based image-dependent attack and white-box universal attack methods in terms of attack time efficiency. The research also shows that Decision-BADGE can successfully deceive unseen victims and accurately target specific classes.
+> The susceptibility of deep neural networks (DNNs) to adversarial examples has prompted an increase in the deployment of adversarial attacks. Image-agnostic universal adversarial perturbations (UAPs) are much more threatening, but many limitations exist to implementing UAPs in real-world scenarios where only binary decisions are returned. In this research, we propose Decision-BADGE, a novel method to craft universal adversarial perturbations for executing decision-based black-box attacks. To optimize perturbation with decisions, we addressed two challenges, namely the magnitude and the direction of the gradient. First, we use batch loss, differences from distributions of ground truth, and accumulating decisions in batches to determine the magnitude of the gradient. This magnitude is applied in the direction of the revised simultaneous perturbation stochastic approximation (SPSA) to update the perturbation. This simple yet efficient method can be easily extended to score-based attacks as well as targeted attacks. Experimental validation across multiple victim models demonstrates that the Decision-BADGE outperforms existing attack methods, even image-specific and score-based attacks. In particular, our proposed method shows a superior success rate with less training time. The research also shows that Decision-BADGE can successfully deceive unseen victim models and accurately target specific classes.
 ### Architecture
-![Architecture](./figures/architecture.png)
+![Architecture](./figures/f1.png)
 ### Experiments
 #### Figures
-![Figures](./figures/figures.png)
+![Visualization](./figures/f2.png)
+![Transferability & Convergence](./figures/f3.png)
 #### Benchmarks
-![Benchmarks](./figures/benchmarks.png)
+![Targeted](./figures/f4.png)
+![Others](./figures/f5.png)
+### Supplementary Material
+![L2 & Tables](./figures/f6.png)
+![Statistical Analysis](./figures/f7.png)
+![Decision Space](./figures/f8.png)
+
 
 ## Usage
 ### Setup Workspace
@@ -31,17 +38,17 @@ python train_victim.py --device cuda:{ID} --model resnet18 --tag "cifar10_resnet
 ```
 Then train a new perturbation.
 ```bash
-# https://github.com/AIRLABkhu/Decision-BADGE/blob/main/train_attack.py
-python train_attack.py --device cuda:{ID} --checkpoint "cifar10_resnet18" --tag "_baselines/00"
+# https://github.com/AIRLABkhu/Decision-BADGE/blob/main/train_attack_spsa.py
+python train_attack_spsa.py --device cuda:{ID} --checkpoint "cifar10_resnet18" --tag "_baselines/00"
 ```
 All files related with this training will be saved in ```"log/cifar10_resnet18/_baselines/00"```. \
 If you want to use Adam optimizer, try ```-c "cifar10-optim/adam"``` option.
 ```bash
-python train_attack.py --device cuda:{ID} --checkpoint "cifar10_resnet18" -c "cifar10-optim/adam" --tag "_baselines/00"
+python train_attack_spsa.py --device cuda:{ID} --checkpoint "cifar10_resnet18" -c "cifar10-optim/adam" --tag "_baselines/00"
 ```
 There are several option you could try.
 ```bash
-python  train_attack.py --device cuda:{ID} --checkpoint "cifar10_resnet18" --tag "_baselines/00" \
+python  train_attack_spsa.py --device cuda:{ID} --checkpoint "cifar10_resnet18" --tag "_baselines/00" \
         --seed {SEED}               \  # The random seed for training.
         --benchmark                 \  # Specify to use benchmark algorithm or not. Deterministic algorithms will be applied if not specified.
         --epochs {EPOCHS}           \  # The number of epochs for training.
@@ -60,6 +67,7 @@ python  train_attack.py --device cuda:{ID} --checkpoint "cifar10_resnet18" --tag
         --loss-func {LOSS}          \  # The name of a loss function.
         --use-logits                   # If you enable this flag, the perturbation will be trained using the scores, not the decisions.
 ```
+You can also try `train_attack.py` with RGF and `train_attack_nes.py` with NES optimization.
 
 ## Citation
 If you use this code in your paper, please consider citing this ```BibTeX``` entry.
