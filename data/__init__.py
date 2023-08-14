@@ -1,6 +1,7 @@
 import os
 
 import torch
+from torch.utils.data import Subset
 from torchvision import datasets, transforms
 
 from data import augmentations
@@ -30,7 +31,7 @@ class MNIST_3ch(datasets.MNIST):
         else:
             transform = transforms.Compose([resize_channel_expand, transform])
         super(MNIST_3ch, self).__init__(root=root, train=train, transform=transform, target_transform=target_transform, download=download)
-
+        
 
 def check_dataset_support(dataset: str):
     dataset = dataset.lower()

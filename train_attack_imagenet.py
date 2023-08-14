@@ -25,12 +25,9 @@ import loss_func
 SUPPORTED_REGULATIONS = ['clamp', 'inf', 'fro']
 
 '''
-python train_attack_imagenet.py --device cuda:0 --checkpoint imagenet1k_resnet50 --tag _baselines/00
-
-python train_attack_imagenet.py --device cuda:0 --checkpoint imagenet1k_resnet50 -lr 1.0E-4 --tag lr/00
-python train_attack_imagenet.py --device cuda:1 --checkpoint imagenet1k_resnet50 -lr 1.0E-3 --tag lr/01
-python train_attack_imagenet.py --device cuda:2 --checkpoint imagenet1k_resnet50 -lr 1.0E-2 --tag lr/02
-python train_attack_imagenet.py --device cuda:3 --checkpoint imagenet1k_resnet50 -lr 1.0E- --tag lr/03
+python train_attack_imagenet.py --device cuda:0 --checkpoint imagenet1k_resnet50 --beta 1.0E-3 --tag beta/01
+python train_attack_imagenet.py --device cuda:1 --checkpoint imagenet1k_resnet50 --beta 1.0E-3 --tag beta/01
+python train_attack_imagenet.py --device cuda:2 --checkpoint imagenet1k_resnet50 --beta 1.0E-3 --tag beta/01
 '''
 parser = argparse.ArgumentParser(description='PyTorch UAP Training')
 parser.add_argument('--config', '-c', type=str, nargs='*', default=[])
@@ -41,6 +38,7 @@ parser.add_argument('--benchmark', action='store_true')
 
 parser.add_argument('--epochs', type=int)
 parser.add_argument('--beta', type=float)
+parser.add_argument('--gamma', type=float)
 parser.add_argument('--learning-rate', '-lr', type=float)
 
 parser.add_argument('--batch-size', type=int)
@@ -139,13 +137,14 @@ dataset = 'imagenet1k'
 transform = [
     transforms.ToTensor(),
 ]
-    
-transform = [models.tv_weights_map[checkpoint['model']].IMAGENET1K_V1.transforms()]
-# model_dim, crop_size = models.tv_input_size_map[checkpoint['model']]
-# transform = transform + [
-#     transforms.Resize(model_dim),
-#     transforms.CenterCrop(crop_size),
-# ]
+  
+model_dim, crop_size = models.tv_input_size_map[checkpoint['model']]
+mean, std = data.get_mean_std('imagenet1k')
+transform = transform + [
+    transforms.Resize(model_dim),
+    transforms.CenterCrop(crop_size),
+    transforms.Normalize(mean, std),
+]
 
 trainset = data.get_dataset(dataset, train=True, transform=transforms.Compose(augmentation_transform + transform))
 testset = data.get_dataset(dataset, train=False, transform=transforms.Compose(transform))
@@ -289,7 +288,7 @@ def batch_loss():
                             fool_p0 = 1 - fool_p0
                             fool_pu = 1 - fool_pu
 
-                        uap.grad = ((fool_p0 - fool_pu) / 0.001) * u
+                        uap.grad = ((fool_p0 - fool_pu) / args.gamma) * u
                         optimizer.step()
                         uap = regulate_perturbation(uap, budget=args.budget, mode=args.regulation)
                         
@@ -310,7 +309,7 @@ def batch_loss():
                     acc = 100 * correct / total
                     train_bar.set_postfix_str(f'acc: {acc:.3f}')
                 logger.info(f'Train accuracy: {acc:.3}%')
-                writer.add_scalar("train/accuracy", acc, epoch)
+                writer.add_scalar('train/accuracy', acc, epoch)
                 
                 training_time += time() - start_time
 
@@ -362,15 +361,15 @@ def batch_loss():
                         examples = torchvision.utils.make_grid(examples, nrow=int(round(examples.size(0) / 2)), padding=1)
                         torchvision.utils.save_image(examples, best_filename)
                         
-                    uap_checkpoint = {
-                        'args': args,
-                        'epoch': epoch,
-                        'fr_list': fr_list,
-                        'fr': fr,
-                        'time': training_time,
-                        'uap': uap.cpu().clone().detach(),
-                    }
-                    torch.save(uap_checkpoint, uap_filename)
+                        uap_checkpoint = {
+                            'args': args,
+                            'epoch': epoch,
+                            'fr_list': fr_list,
+                            'fr': fr,
+                            'time': training_time,
+                            'uap': uap.cpu().clone().detach(),
+                        }
+                        torch.save(uap_checkpoint, uap_filename)
                         
                     logger.info(f'Evaluation fooling-rate: {fr:.3}%')
                     logger.info(f'Evaluation best fr:      {best_fr:.3}% at {best_epoch} epoch')
@@ -389,10 +388,10 @@ def batch_loss():
             logger.info(f'L2-norm      : {l2_norm:.3f}')
             logger.info(f'Linf-norm    : {inf_norm:.3f}')
             logger.info(f'Learning rate: {optimizer.param_groups[0]["lr"]:.3f}')
-            writer.add_scalar("epoch/l1-norm", l1_norm, epoch)
-            writer.add_scalar("epoch/l2-norm", l2_norm, epoch)
-            writer.add_scalar("epoch/inf-norm", inf_norm, epoch)
-            writer.add_scalar("epoch/learning rate", optimizer.param_groups[0]["lr"], epoch)
+            writer.add_scalar('epoch/l1-norm', l1_norm, epoch)
+            writer.add_scalar('epoch/l2-norm', l2_norm, epoch)
+            writer.add_scalar('epoch/inf-norm', inf_norm, epoch)
+            writer.add_scalar('epoch/learning rate', optimizer.param_groups[0]['lr'], epoch)
             
             lr_scheduler.step()
             beta_scheduler.step(None)
@@ -407,7 +406,8 @@ def batch_loss():
 
 if __name__ == '__main__':
     try:
-        evaluation()
+        # evaluation()
+        # exit()
         batch_loss()
     except Exception as e:
         _print(f'Raised {e!r}')

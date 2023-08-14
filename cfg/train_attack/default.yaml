@@ -1,10 +1,12 @@
 device: cuda:0
-seed: 0
+seed: null
 deterministic: yes
 
 epochs: 1600
 beta: 0.01
+gamma: 0.001
 learning_rate: 1.0E-2
+algorithm: rgf
 
 optimizer:
   name: SGD
@@ -26,6 +28,7 @@ lr_scheduler:
 batch_size: 256
 eval_batch_size: 512
 images_per_class: -1
+eval_images_per_class: -1
 accumulation: 1
 max_iters: -1
 sliding_window_batch: False
@@ -36,6 +39,7 @@ budget: 10.0
 regulation: clamp
 eval_step_size: -1
 
+useeye: no
 loss_func: accuracy
 use_logits: no
 

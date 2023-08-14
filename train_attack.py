@@ -26,6 +26,9 @@ SUPPORTED_REGULATIONS = ['clamp', 'inf', 'fro']
 
 '''
 python train_attack.py --device cuda:0 -c cifar10-optim/adam --checkpoint cifar10_resnext29_2x64d_1.0 --tag exp_others
+python train_attack.py --device cuda:6 -c cifar10-optim/adam --checkpoint test --tag baseline_00
+
+python train_attack.py --device cuda:0 -c cifar10-optim/adam --checkpoint cifar10_vit_1.0 --tag baseline_00
 '''
 parser = argparse.ArgumentParser(description='PyTorch UAP Training')
 parser.add_argument('--config', '-c', type=str, nargs='*', default=[])
@@ -41,6 +44,7 @@ parser.add_argument('--learning-rate', '-lr', type=float)
 parser.add_argument('--batch-size', type=int)
 parser.add_argument('--eval-batch-size', type=int)
 parser.add_argument('--images-per-class', '-ipc', type=int)
+parser.add_argument('--eval-images-per-class', '-eipc', type=int)
 parser.add_argument('--accumulation', type=int)
 parser.add_argument('--max-iters', type=int)
 parser.add_argument('--sliding-window-batch', '-swb', action='store_true')
@@ -90,6 +94,7 @@ def _print(*args, sep=' '):
     logger.info(line)
     print(line)
 
+_print('Algorithm: RGF')
 _print(args)
 
 writer = SummaryWriter(exp_dir)
@@ -140,13 +145,21 @@ if not checkpoint['args'].skip_norm:
     transform.append(transforms.Normalize(*data.get_mean_std(dataset)))
 trainset = data.get_dataset(dataset, train=True, transform=transforms.Compose(augmentation_transform + transform))
 testset = data.get_dataset(dataset, train=False, transform=transforms.Compose(transform))
+
 if args.images_per_class != -1:
     indices = []
     for i in range(10):
         indices_i = [j for j in range(len(trainset)) if trainset[j][1] == i]
-        indices.append(indices_i[:10])
+        indices.append(indices_i[:args.images_per_class])
     indices = [i for sublist in indices for i in sublist]
     trainset = Subset(trainset, indices)
+if args.eval_images_per_class != -1:
+    indices = []
+    for i in range(10):
+        indices_i = [j for j in range(len(testset)) if testset[j][1] == i]
+        indices.append(indices_i[:args.eval_images_per_class])
+    indices = [i for sublist in indices for i in sublist]
+    testset = Subset(testset, indices)
 
 loader_kwargs = dict(num_workers=4, 
                      worker_init_fn=seed_worker, 
@@ -161,7 +174,7 @@ num_channels, input_height, input_width = samples[0].shape
 
 # Model
 print('==> BUILD MODEL')
-model = models.get_model(checkpoint['model']).eval().to(DEVICE)
+model = models.get_model(checkpoint['model'], num_classes=len(classes)).eval().to(DEVICE)
 model.load_state_dict(checkpoint['net'])
 criterion = loss_func.get_loss_function(args.loss_func)
 
@@ -354,15 +367,15 @@ def batch_loss():
                         examples = torchvision.utils.make_grid(examples, nrow=int(round(examples.size(0) / 2)), padding=1)
                         torchvision.utils.save_image(examples, best_filename)
                         
-                    uap_checkpoint = {
-                        'args': args,
-                        'epoch': epoch,
-                        'fr_list': fr_list,
-                        'fr': fr,
-                        'time': training_time,
-                        'uap': uap.cpu().clone().detach(),
-                    }
-                    torch.save(uap_checkpoint, uap_filename)
+                        uap_checkpoint = {
+                            'args': args,
+                            'epoch': epoch,
+                            'fr_list': fr_list,
+                            'fr': fr,
+                            'time': training_time,
+                            'uap': uap.cpu().clone().detach(),
+                        }
+                        torch.save(uap_checkpoint, uap_filename)
                         
                     logger.info(f'Evaluation fooling-rate: {fr:.3}%')
                     logger.info(f'Evaluation best fr:      {best_fr:.3}% at {best_epoch} epoch')
@@ -386,8 +399,10 @@ def batch_loss():
             writer.add_scalar("epoch/inf-norm", inf_norm, epoch)
             writer.add_scalar("epoch/learning rate", optimizer.param_groups[0]["lr"], epoch)
             
-            lr_scheduler.step()
-            beta_scheduler.step(None)
+            if lr_scheduler is not None:
+                lr_scheduler.step()
+            if beta_scheduler is not None:
+                beta_scheduler.step(None)
 
     writer.flush()
     writer.close()

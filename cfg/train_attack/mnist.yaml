@@ -6,12 +6,4 @@ optimizer:
   name: SGD
   kwargs: {}
 
-beta_scheduler: 
-  name: null
-
-lr_scheduler:
-  name: CosineAnnealingWarmRestarts
-  kwargs:
-    eta_min: 10.0
-
 budget: 70.0

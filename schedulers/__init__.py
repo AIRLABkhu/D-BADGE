@@ -27,7 +27,7 @@ class Scheduler:
 
 name_scheduler_map = {
     name.lower(): t for name, t in lr_scheduler.__dict__.items()
-    if isinstance(t, type) and issubclass(t, lr_scheduler._LRScheduler) and t != lr_scheduler._LRScheduler
+    if isinstance(t, type) and issubclass(t, lr_scheduler.LRScheduler) and t != lr_scheduler._LRScheduler
 }
 name_scheduler_map[None] = None
 
@@ -35,6 +35,9 @@ name_scheduler_map[None] = None
 def get_scheduler(name: str, value: float=None, optimizer=None, **kwargs):
     if isinstance(name, str):
         name = name.lower()
+        
+    if name is None:
+        return None
 
     if value is not None and optimizer is not None:
         raise ValueError('Must provide one of value or optimizer not both.')
@@ -43,3 +46,7 @@ def get_scheduler(name: str, value: float=None, optimizer=None, **kwargs):
         return Scheduler(name_scheduler_map[name], value=value, **kwargs)
     else:
         return name_scheduler_map[name](optimizer=optimizer, **kwargs)
+
+
+if __name__ == '__main__':
+    print(*name_scheduler_map.keys(), sep='\n')

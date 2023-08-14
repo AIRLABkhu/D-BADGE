@@ -22,7 +22,7 @@ import models, data
 import utils
 
 '''
-python hyp_test.py  --device cuda:0 --tag default
+python vis_transferability2.py  --device cuda:0 --tag default
 '''
 parser = argparse.ArgumentParser(description='PyTorch CIFAR10 Transferibility Visualization')
 parser.add_argument('--device', type=str, default='cuda:0')
@@ -31,10 +31,10 @@ parser.add_argument('--num-workers', type=int, default=4)
 parser.add_argument('--num-baselines', type=int, default=5)
 parser.add_argument('--log-dir', type=str, default='log')
 parser.add_argument('--checkpoints', type=str, nargs='*', default=['cifar10_resnet18_1.0',
-                                                                   'cifar10_resnet20_1.0',
                                                                    'cifar10_vgg19_1.0',
                                                                    'cifar10_mobilenet_v2_1.0',
-                                                                   'cifar10_resnext29_2x64d_1.0',
+                                                                   'cifar10_vit_1.0',
+                                                                   'cifar10_swin_1.0',
 ])
 parser.add_argument('--tag', type=str, required=True)
 parser.add_argument('--overwrite', default=False, action='store_true')
@@ -217,12 +217,13 @@ ax.xaxis.set_ticks_position('bottom')
 ax.yaxis.set_ticks_position('left')
 ax.set_xticks(range(num_victims))
 ax.set_yticks(range(num_victims))
-arch_names = sorted(['RN18', 'RN20', 'VGG19', 'MBN_V2', 'RNX29'])
+arch_names = sorted(['RN18', 'VGG19', 'MBN_v2', 'ViT', 'Swin'])
+# arch_names = ['RN18', 'RN20', 'VGG19', 'MBN_v2', 'RNX29']
 ax.set_xticklabels(arch_names, rotation=30)
 ax.set_yticklabels(arch_names, rotation=30)
 
-plt.savefig('temp/temp.png')
-plt.savefig('temp/temp.pdf')
+plt.savefig(log_dir.joinpath('grid.png'))
+plt.savefig(log_dir.joinpath('grid.pdf'))
 
 def print_as_df(data: torch.Tensor, title=None, index=None, columns=None, print_fn=None, float_fmt=None, newline=True):
     if index is None:

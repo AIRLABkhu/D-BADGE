@@ -19,6 +19,9 @@ from .dla_simple import *
 from .dla import *
 from .mnist import *
 from .toy import *
+from .vit_small import SmallVisionTransformer
+from .vit import *
+from .swin import *
 import functools
 from torchvision import models as tv_models
 
@@ -44,6 +47,13 @@ model_map = {
     'regnetx_200mf':    RegNetX_200MF,
     'simple_dla':       SimpleDLA,
     
+    'vit_s':            functools.partial(SmallVisionTransformer, 
+                                image_size=32, patch_size=4, num_classes=10, 
+                                dim=512, depth=6, heads=8, mlp_dim=512, 
+                                dropout=0.1, emb_dropout=0.2),
+    'vit':              vit, 
+    'swin':             swin, 
+    
     'mnist_vgg11':      functools.partial(VGG, 'VGG11', in_channels=1),
     
     'mnist_arc_a':      mnist_arc_a,
@@ -54,8 +64,7 @@ model_map = {
     
     'toy_mnist':        toy_mnist,
     'toy_mnist_t':      toy_mnist_t,
-    'toy_cifar10':      toy_cifar10,
-    'toy_cifar100':     toy_cifar100,
+    'toy_cifar':        toy_cifar,
     
     'tv_vgg16':         tv_models.vgg16,
     'tv_vgg19':         tv_models.vgg19,
@@ -84,11 +93,11 @@ tv_input_size_map = { # (model_dim, crop_size)
 }
 
 
-def get_model(name: str):
+def get_model(name: str, num_classes: int=10):
     if name not in model_map:
         raise NotImplementedError(f'{name} is not implemented. Supported models: {", ".join(model_map.keys())}.')
     
-    return model_map[name]()
+    return model_map[name](num_classes=num_classes)
 
 def setup_tv_model_checkpoint(model_name: str, device: str=None, if_not_exists: bool=True, verbose: bool=True):
     if device is None:

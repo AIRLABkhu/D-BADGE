@@ -122,7 +122,7 @@ with torch.no_grad():
     
     ax = plt.subplot(131)
     plt.title('(a) Original images', y=title_y)
-    ax.contourf(decision_mesh_x, decision_mesh_y, decision_mesh_z, alpha=0.3, cmap=plt.cm.rainbow)
+    ax.contourf(decision_mesh_x, decision_mesh_y, decision_mesh_z, alpha=0.3, cmap=cmap)
     scatter = ax.scatter(feats_cln[target_match_cln_indices, principal_indices[0]],
                          feats_cln[target_match_cln_indices, principal_indices[1]],
                          c=targets, s=scatter_size, alpha=alpha, cmap=cmap)
@@ -130,7 +130,7 @@ with torch.no_grad():
     
     ax = plt.subplot(132)
     plt.title('(b) Adverasrial examples', y=title_y)
-    ax.contourf(decision_mesh_x, decision_mesh_y, decision_mesh_z, alpha=0.3, cmap=plt.cm.rainbow)
+    ax.contourf(decision_mesh_x, decision_mesh_y, decision_mesh_z, alpha=0.3, cmap=cmap)
     scatter = ax.scatter(feats_adv[target_match_cln_indices, principal_indices[0]],
                          feats_adv[target_match_cln_indices, principal_indices[1]],
                          c=targets, s=scatter_size, alpha=alpha, cmap=cmap)

@@ -12,7 +12,7 @@ from functools import partial
 from torch import nn
 
 
-def mnist(activation, use_dropout, kernel_size, num_conv_layers):
+def mnist(activation, use_dropout, kernel_size, num_conv_layers, num_classes=10):
     layers = []
     for i in range(num_conv_layers):
         if i == 0:
@@ -31,7 +31,7 @@ def mnist(activation, use_dropout, kernel_size, num_conv_layers):
     layers.append(activation)
     if use_dropout:
         layers.append(nn.Dropout1d(p=0.2, inplace=False))
-    layers.append(nn.Linear(32, 10))
+    layers.append(nn.Linear(32, num_classes))
     layers.append(nn.Sigmoid())
     
     return nn.Sequential(*layers)

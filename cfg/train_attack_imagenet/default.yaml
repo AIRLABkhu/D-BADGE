@@ -4,11 +4,13 @@ deterministic: yes
 
 epochs: 1000
 beta: 0.01
-learning_rate: 1.0E-2
+gamma: 0.001
+learning_rate: 1.0E-4
 
 optimizer:
-  name: SGD
-  kwargs: {}
+  name: Adam
+  kwargs:
+    betas: [0.5, 0.999]
 
 beta_scheduler: 
   name: StepLR
@@ -23,9 +25,9 @@ lr_scheduler:
     T_0: ${epochs}
     T_mult: 1
 
-batch_size: 128
+batch_size: 256
 eval_batch_size: 512
-images_per_class: 10
+images_per_class: -1
 accumulation: 1
 max_iters: -1
 sliding_window_batch: False
