@@ -1,7 +1,16 @@
-# Decision-BADGE
-Code for the paper "[Decision-BADGE: Decision-based Adversarial Batch Attack with Directional Gradient Estimation](https://arxiv.org/abs/2303.04980)".
+# D-BADGE
+Code for the paper "[D-BADGE: Decision-based Adversarial Batch Attack with Directional Gradient Estimation](https://arxiv.org/abs/2303.04980)".
 ### Abstract
-> The susceptibility of deep neural networks (DNNs) to adversarial examples has prompted an increase in the deployment of adversarial attacks. Image-agnostic universal adversarial perturbations (UAPs) are much more threatening, but many limitations exist to implementing UAPs in real-world scenarios where only binary decisions are returned. In this research, we propose Decision-BADGE, a novel method to craft universal adversarial perturbations for executing decision-based black-box attacks. To optimize perturbation with decisions, we addressed two challenges, namely the magnitude and the direction of the gradient. First, we use batch loss, differences from distributions of ground truth, and accumulating decisions in batches to determine the magnitude of the gradient. This magnitude is applied in the direction of the revised simultaneous perturbation stochastic approximation (SPSA) to update the perturbation. This simple yet efficient method can be easily extended to score-based attacks as well as targeted attacks. Experimental validation across multiple victim models demonstrates that the Decision-BADGE outperforms existing attack methods, even image-specific and score-based attacks. In particular, our proposed method shows a superior success rate with less training time. The research also shows that Decision-BADGE can successfully deceive unseen victim models and accurately target specific classes.
+> The susceptibility of deep neural networks (DNNs) to adversarial examples has prompted an increase in the deployment of adversarial attacks.
+Image-agnostic universal adversarial perturbations (UAPs) are much more threatening, but many limitations exist to implementing UAPs in real-world scenarios where only binary decisions are returned.
+In this research, we propose D-BADGE, a novel method to craft universal adversarial perturbations for executing decision-
+To primarily optimize perturbation by focusing on decisions, we consider the direction of these updates as the primary factor and the magnitude of updates as the secondary factor. 
+First, we employ Hamming loss that measures the distance from distributions of ground truth and accumulating decisions in batches to determine the magnitude of the gradient. 
+This magnitude is applied in the direction of the revised simultaneous perturbation stochastic approximation (SPSA) to update the perturbation. 
+This simple yet efficient decision-based method functions similarly to a score-based attack, enabling the generation of  UAPs in real-world scenarios, and can be easily extended to targeted attacks.
+Experimental validation across multiple victim models demonstrates that the D-BADGE outperforms existing attack methods, even image-specific and score-based attacks. 
+In particular, our proposed method shows a superior attack success rate with less training time. 
+The research also shows that D-BADGE can successfully deceive unseen victim models and accurately target specific classes.
 ### Architecture
 ![Architecture](./figures/f1.png)
 ### Experiments
@@ -21,8 +30,8 @@ Code for the paper "[Decision-BADGE: Decision-based Adversarial Batch Attack wit
 ### Setup Workspace
 Clone this Git repository.
 ```bash
-git clone "https://github.com/AIRLABkhu/Decision-BADGE.git"
-cd "Decision-BADGE"
+git clone "https://github.com/AIRLABkhu/D-BADGE.git"
+cd "D-BADGE"
 
 # Unzip checkpoitns. (OPTIONAL)
 cd "log"
@@ -33,12 +42,12 @@ cd ".."
 ### Run Training
 You can train your own victim model. (OPTIONAL)
 ```bash
-# https://github.com/AIRLABkhu/Decision-BADGE/blob/main/train_victim.py
+# https://github.com/AIRLABkhu/D-BADGE/blob/main/train_victim.py
 python train_victim.py --device cuda:{ID} --model resnet18 --tag "cifar10_resnet18"
 ```
 Then train a new perturbation.
 ```bash
-# https://github.com/AIRLABkhu/Decision-BADGE/blob/main/train_attack_spsa.py
+# https://github.com/AIRLABkhu/D-BADGE/blob/main/train_attack_spsa.py
 python train_attack_spsa.py --device cuda:{ID} --checkpoint "cifar10_resnet18" --tag "_baselines/00"
 ```
 All files related with this training will be saved in ```"log/cifar10_resnet18/_baselines/00"```. \
