@@ -1,5 +1,5 @@
 # D-BADGE
-Code for the paper "[D-BADGE: Decision-based Adversarial Batch Attack with Directional Gradient Estimation](https://arxiv.org/abs/2303.04980)".
+Code for the paper "[D-BADGE: Decision-based Adversarial Batch Attack with Directional Gradient Estimation](https://ieeexplore.ieee.org/abstract/document/10542123)" (IEEE Access).
 ### Abstract
 > The susceptibility of deep neural networks (DNNs) to adversarial examples has prompted an increase in the deployment of adversarial attacks.
 Image-agnostic universal adversarial perturbations (UAPs) are much more threatening, but many limitations exist to implementing UAPs in real-world scenarios where only binary decisions are returned.
@@ -81,14 +81,15 @@ You can also try `train_attack.py` with RGF and `train_attack_nes.py` with NES o
 ## Citation
 If you use this code in your paper, please consider citing this ```BibTeX``` entry.
 ```bibtex
-@misc{yu_arxiv_2023,
-  doi = {10.48550/ARXIV.2303.04980},
-  url = {https://arxiv.org/abs/2303.04980},
-  author = {Yu Geunhyeok and Jeon Minwoo and Hwang Hyoseok},
-  keywords = {Computer Vision and Pattern Recognition (cs.CV)},
-  title = {Decision-BADGE: Decision-based Adversarial Batch Attack with Directional Gradient Estimation},
-  publisher = {arXiv},
-  year = {2023},
-  copyright = {arXiv.org perpetual, non-exclusive license}
+@ARTICLE{yu-2024-dbadge,
+  author={Yu, Geunhyeok and Jeon, Minwoo and Hwang, Hyoseok},
+  journal={IEEE Access}, 
+  title={D-BADGE: Decision-Based Adversarial Batch Attack With Directional Gradient Estimation}, 
+  year={2024},
+  volume={12},
+  number={},
+  pages={80770-80780},
+  keywords={Perturbation methods;Closed box;Transformers;Estimation;Vectors;Measurement;Hamming distances;Artificial neural networks;Adversarial machine learning;Image classification;Representation learning;Deep neural networks;universal decision-based adversarial attack;image classification;representation learning;vulnerability;zeroth-order optimization},
+  doi={10.1109/ACCESS.2024.3407097}}
 }
 ```
